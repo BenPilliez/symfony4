@@ -70,10 +70,17 @@ class AdvertController extends AbstractController
   public function view(int $id, Request $request)
   {
 
-    return $this->render(
-      'Advert/view.html.twig',
-      ['id' => $id]
+    $advert = array(
+      'title'   => 'Recherche développpeur Symfony2',
+      'id'      => $id,
+      'author'  => 'Alexandre',
+      'content' => 'Nous recherchons un développeur Symfony2 débutant sur Lyon. Blabla…',
+      'date'    => new \Datetime()
     );
+
+    return $this->render('Advert/view.html.twig', array(
+      'advert' => $advert
+    ));
   }
 
   /**
@@ -97,7 +104,7 @@ class AdvertController extends AbstractController
   }
 
   /**
-   * @Route("/edit/{id}", name="advert_edit", requirements={"id"="\d+"}, methods={"PUT"})
+   * @Route("/edit/{id}", name="advert_edit", requirements={"id"="\d+"}, methods={"PUT","GET"})
    */
   public function edit(int $id, Request $request)
   {
@@ -105,8 +112,19 @@ class AdvertController extends AbstractController
       $this->addFlash('notice', 'Annonce bien modifiée');
       return $this->redirectToRoute('advert_view', ["id" => 5]);
     }
+    
+    $advert = array(
+      'title'   => 'Recherche développpeur Symfony',
+      'id'      => $id,
+      'author'  => 'Alexandre',
+      'content' => 'Nous recherchons un développeur Symfony débutant sur Lyon. Blabla…',
+      'date'    => new \Datetime()
+    );
 
-    return $this->render('Advert/edit.html.twig');
+    return $this->render('Advert/edit.html.twig', array(
+      'advert' => $advert
+    ));
+
   }
 
   /**
