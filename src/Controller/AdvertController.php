@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 class AdvertController extends AbstractController
 {
 
-  public function menuAction($limit)
+  public function lastAdverts($limit)
   {
     $listAdverts = array(
       array('id' => 2, 'title' => 'Recherche développeur symfony'),
@@ -23,7 +23,7 @@ class AdvertController extends AbstractController
       array('id' => 4, 'title' => 'Offre de stage de webdesigner')
     );
 
-    return $this->render('Advert/_menu.html.twig', array(
+    return $this->render('Advert/_lastAdverts.html.twig', array(
       'listAdverts' => $listAdverts
     ));
   }
