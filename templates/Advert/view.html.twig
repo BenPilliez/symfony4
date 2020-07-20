@@ -1,23 +1,33 @@
 {# templates/Advert/view.html.twig #}
+{% extends 'base.html.twig' %}
 
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Affichage de l'annonce {{ id }}</title>
-  </head>
-  <body>
-    <h1>Affichage de l'annonce n°{{ id }} !</h1>
+{%block title %}
+  Lecture de l'annonce - {{parent()}}
+{% endblock %}
 
-    <div>
-      {# On affiche tous les messages flash dont le nom est « info » #}
-      {% for message in app.flashes('info') %}
-        <p>Message flash : {{ message }}</p>
-      {% endfor %}
-    </div>
+{% block body %}
+<div class="col">
+    <h2>{{advert.title}}</h2>
+    <i>Par {{advert.author}}, le {{ advert.date|date('d/m/Y') }}</i>
 
-    <p>
-      Ici nous pourrons lire l'annonce ayant comme id : {{ id }}<br />
-      Mais pour l'instant, nous ne savons pas encore le faire, cela viendra !
-    </p>
-  </body>
-</html>
+  <div class="mt-4">
+    {{ advert.content }}
+  </div>
+
+    <p class="mt-5">
+    <a href="{{ path('advert_index') }}" class="btn btn-default">
+      <i class="glyphicon glyphicon-chevron-left"></i>
+      Retour à la liste
+    </a>
+    <a href="{{ path('advert_edit', {'id': advert.id}) }}" class="btn btn-default">
+      <i class="glyphicon glyphicon-edit"></i>
+      Modifier l'annonce
+    </a>
+    <a href="{{ path('advert_delete', {'id': advert.id}) }}" class="btn btn-danger">
+      <i class="glyphicon glyphicon-trash"></i>
+      Supprimer l'annonce
+    </a>
+  </p>
+  </div>
+
+{% endblock %}
