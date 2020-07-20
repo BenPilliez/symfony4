@@ -79,13 +79,13 @@ class AdvertController extends AbstractController
     );
 
     
-     $antispam = $this->container->get('monservice.antispam');
+     /* $antispam = $this->container->get('monservice.antispam');
 
      // Je pars du principe que $text contient le texte d'un message quelconque
      $text = '...';
      if ($antispam->isSpam($text)) {
        throw new \Exception('Votre message a été détecté comme spam !');
-     }
+     } */
 
     return $this->render('Advert/view.html.twig', array(
       'advert' => $advert
