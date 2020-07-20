@@ -11,24 +11,56 @@
 			{{ encore_entry_link_tags('app') }}
 
 			<!-- Renders a link tag (if your module requires any CSS)
-						                 <link rel="stylesheet" href="/build/app.css"> -->
+												 <link rel="stylesheet" href="/build/app.css"> -->
 		{% endblock %}
 	</head>
 	<body>
-		<nav class="navbar navbar-expand-lg navbar-light bg-light">
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			{{ render(controller('App\\Controller\\AdvertController:menuAction'))}}
-		</nav>
-		<div class="container mt-5"> {% block body %}{% endblock %}
+		<div class="container-fluid">
+			<div id="header" class="jumbotron">
+				<h1>Ma plataforme d'annonces</h1>
+				<p>Ce projet est propulsé par symfony,et construit grâce au mooc OpenClassroom
+				</p>
+				<p>
+					<a class="btn btn-primary btn-lg" href="https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony2">
+						Participer au MOOC »</a>
+				</p>
 			</div>
+			<div class="row">
+				<div id="menu" class="col">
+					<nav class="navbar navbar-expand-lg navbar-light bg-light">
+						<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+							<span class="navbar-toggler-icon"></span>
+						</button>
+						{{ render(controller('App\\Controller\\AdvertController:menuAction', {'limit':3}))}}
+					</nav>
+				</div>
+			</div>
+
+			<div id="contents">
+				<div class="row"> {% block body %}{% endblock %}
+					</div>
+				</div>
+
+
+				<hr>
+
+				<div class="row">
+					<footer>
+						<p>The sky's the limit ©
+							{{ 'now'|date('Y') }}
+							and beyond.</p>
+					</footer>
+				</div>
+
+
+			</div>
+
 			{% block javascripts %}
 				{{ encore_entry_script_tags('app') }}
 
 				<!-- Renders app.js & a webpack runtime.js file
-								                <script src="/build/runtime.js"></script>
-								                <script src="/build/app.js"></script> -->
+																																				                <script src="/build/runtime.js"></script>
+																																				                <script src="/build/app.js"></script> -->
 			{% endblock %}
 		</body>
 	</html>

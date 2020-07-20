@@ -2,8 +2,29 @@
 
 {% extends "base.html.twig" %}
 
-{% block title %} {{parent()}} - Index {% endblock %}
+{% block title %}
+	{{parent()}}
+	- Index
+{% endblock %}
 
 {% block body %}
-  Notre plateforme est un peu vide pour le moment mais cela viendra !
+	{% for advert in listAdverts  %}
+		<div class="col-lg-4 col-sm-12 mt-3">
+			<div class="card" style="width: 18rem;">
+				<div class="card-body">
+					<h5 class="card-title">{{advert.title}}</h5>
+					<p class="card-text">
+						Par:
+						{{advert.author}},
+																      le:
+						{{advert.date|date('d/m/Y')}}
+					</p>
+					<a href="{{ path('advert_view', {'id': advert.id}) }}" class="btn btn-primary">
+						{{ advert.title }}
+					</a>
+				</div>
+			</div>
+		</div>
+
+	{% endfor %}
 {% endblock %}

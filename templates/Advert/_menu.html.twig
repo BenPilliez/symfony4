@@ -3,12 +3,19 @@
 {# Ce template n'hérite de personne,
    tout comme le template inclus avec {{ include() }}. #}
 	<div class="collapse navbar-collapse" id="navbarSupportedContent"> <ul class="navbar-nav mr-auto">
+		<li class="nav-item active">
+			<a class="nav-link" href="{{ path('advert_index') }}">Accueil</a>
+		</li>
+		<li class="nav-item">
+			<a class="nav-link" href="{{ path('advert_add') }}">Ajouter une annonce</a>
+		</li>
 		{% for advert in listAdverts %}
 			<li class="nav-item">
-				<a href="{{ path('advert_view', {'id': advert.id}) }}">
+				<a class="nav-link " href="{{ path('advert_view', {'id': advert.id}) }}">
 					{{ advert.title }}
 				</a>
 			</li>
 		{% endfor %}
+
 	</ul>
 </div>
