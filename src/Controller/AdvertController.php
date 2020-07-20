@@ -7,10 +7,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-/* Permet de créer un service que nous avons nous même créé, 
-pour l'instancier il suffit de : 
-$service = new ServiceName(); */
-use App\Services\AntiSpam;
 
 /**
  * @Route("/advert")
@@ -81,6 +77,15 @@ class AdvertController extends AbstractController
       'content' => 'Nous recherchons un développeur Symfony2 débutant sur Lyon. Blabla…',
       'date'    => new \Datetime()
     );
+
+    
+     $antispam = $this->container->get('monservice.antispam');
+
+     // Je pars du principe que $text contient le texte d'un message quelconque
+     $text = '...';
+     if ($antispam->isSpam($text)) {
+       throw new \Exception('Votre message a été détecté comme spam !');
+     }
 
     return $this->render('Advert/view.html.twig', array(
       'advert' => $advert
