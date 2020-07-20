@@ -9,13 +9,5 @@
 		<li class="nav-item">
 			<a class="nav-link" href="{{ path('advert_add') }}">Ajouter une annonce</a>
 		</li>
-		{% for advert in listAdverts %}
-			<li class="nav-item">
-				<a class="nav-link " href="{{ path('advert_view', {'id': advert.id}) }}">
-					{{ advert.title }}
-				</a>
-			</li>
-		{% endfor %}
-
 	</ul>
 </div>

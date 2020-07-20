@@ -21,26 +21,32 @@
 				<p>Ce projet est propulsé par symfony,et construit grâce au mooc OpenClassroom
 				</p>
 				<p>
-					<a class="btn btn-primary btn-lg" href="https://openclassrooms.com/courses/developpez-votre-site-web-avec-le-framework-symfony2">
+					<a class="btn btn-primary btn-lg" href="https://openclassrooms.com/fr/courses/3619856-developpez-votre-site-web-avec-le-framework-symfony/3620140-symfony-un-framework-php" target="_blank	">
 						Participer au MOOC »</a>
 				</p>
 			</div>
 			<div class="row">
-				<div id="menu" class="col">
+				<div id="menu" class="col-12">
 					<nav class="navbar navbar-expand-lg navbar-light bg-light">
 						<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 							<span class="navbar-toggler-icon"></span>
 						</button>
-						{{ render(controller('App\\Controller\\AdvertController:menuAction', {'limit':3}))}}
+						{{include('Advert/_menu.html.twig')}}
 					</nav>
 				</div>
 			</div>
 
-			<div id="contents">
+			<div class="row mt-4">
+				<div class="col-3">
+					{{ render(controller('App\\Controller\\AdvertController:lastAdverts', {'limit':3}))}}
+				</div>
+			
+
+			<div id="contents" class="col-9">
 				<div class="row"> {% block body %}{% endblock %}
 					</div>
 				</div>
-
+			</div>
 
 				<hr>
 
@@ -51,16 +57,13 @@
 							and beyond.</p>
 					</footer>
 				</div>
-
-
 			</div>
 
 			{% block javascripts %}
 				{{ encore_entry_script_tags('app') }}
 
 				<!-- Renders app.js & a webpack runtime.js file
-																																				                <script src="/build/runtime.js"></script>
-																																				                <script src="/build/app.js"></script> -->
+				 <script src="/build/app.js"></script> -->
 			{% endblock %}
 		</body>
 	</html>

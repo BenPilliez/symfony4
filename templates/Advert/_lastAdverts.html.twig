@@ -1,0 +1,14 @@
+		<div>
+            <h5>Les dernières annonces</h5>
+            <ul class="nav nav-pills nav-stacked">
+            {% for advert in listAdverts %}
+			<li class="nav-item">
+				<a class="nav-link " href="{{ path('advert_view', {'id': advert.id}) }}">
+					{{ advert.title }}
+				</a>
+			</li>
+		{% endfor %}
+        </ul>
+        </div>
+        
+        
