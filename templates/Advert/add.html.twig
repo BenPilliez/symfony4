@@ -1,0 +1,12 @@
+{# templates/Advert/add.html.twig#}
+
+{% extends "layout.html.twig"%}
+
+{% block body%}
+	<h2 class="h2">Ajout d'une annonce</h2>
+
+	{% include("Advert/_form.html.twig") %}
+	<p>
+		Attention : cette annonce sera ajouté directement sur la page d'acceuil après validation du formulaire.
+	</p>
+{% endblock %}
