@@ -14,6 +14,20 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AdvertController extends AbstractController
 {
+
+  public function menuAction()
+  {
+    $listAdverts = array(
+      array('id' => 2, 'title' => 'Rechercher développeur symfony'),
+      array('id' => 3, 'title' => 'Mission de webmaster'),
+      array('id' => 4, 'title' => 'Offre de stage de webdesigner')
+    );
+
+    return $this->render('Advert/_menu.html.twig', array(
+      'listAdverts' => $listAdverts
+    ));
+  }
+
   // requirements permet de typé les params grâce à des regex, defaults= permet de passer une valeur par défaut au param
   /**
    * @Route("/{page}", name="advert_index", requirements={"page"="\d+"},defaults={"page" = 1}, methods={"GET"})
