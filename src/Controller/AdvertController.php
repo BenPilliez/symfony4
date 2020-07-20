@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use App\Entity\Adverts;
 
 /**
  * @Route("/advert")
@@ -69,16 +70,9 @@ class AdvertController extends AbstractController
    */
   public function view(int $id, Request $request)
   {
+    $reposository = $this->getDoctrine()->getManager()->getRepository(Adverts::class);
 
-    $advert = array(
-      'title'   => 'Recherche développpeur Symfony2',
-      'id'      => $id,
-      'author'  => 'Alexandre',
-      'content' => 'Nous recherchons un développeur Symfony2 débutant sur Lyon. Blabla…',
-      'date'    => new \Datetime()
-    );
-
-    
+    $advert = $reposository->find($id);
      /* $antispam = $this->container->get('monservice.antispam');
 
      // Je pars du principe que $text contient le texte d'un message quelconque
@@ -97,6 +91,16 @@ class AdvertController extends AbstractController
    */
   public function add(Request $request)
   {
+
+    $advert = new Adverts();
+    $advert->setTitle('Recherche développeur web');
+    $advert->setContent("Bonjour, nous recherchons un développeur web capable de faire tout est n'importe quoi, mais surtout pas n'importe quoi !");
+    $advert->setAuthor('Benjamin');
+
+    $em = $this->getDoctrine()->getManager();
+    $em->persist($advert);
+    $em->flush(); 
+
 
     if ($request->isMethod("POST")) {
       $this->addFlash('info', 'Annonce bien enregistrée');

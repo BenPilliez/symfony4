@@ -10,12 +10,16 @@ services:
     _defaults:
         public: true
         autoconfigure: true
-   
+        
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/*'
         exclude: '../src/{DependencyInjection,Entity,Tests,Kernel.php}'
+
+    App\Repository\:
+        resource: '../src/Repository'
+        autowire: true
 
     # controllers are imported separately to make sure services can be injected
     # as action arguments even if you don't extend any base controller class
@@ -27,8 +31,8 @@ services:
     # please note that last definitions always *replace* previous ones
 
     monservice.antispam:
-        class: App\Services\AntiSpam
-        arguments:
-            - "@mailer"
-            - '%kernel.default_locale%'
-            - 10
+            class: App\Services\AntiSpam
+            arguments:
+                - "@mailer"
+                - '%kernel.default_locale%'
+                - 10
