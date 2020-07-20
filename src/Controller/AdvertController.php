@@ -15,10 +15,10 @@ use Symfony\Component\HttpFoundation\Request;
 class AdvertController extends AbstractController
 {
 
-  public function menuAction()
+  public function menuAction($limit)
   {
     $listAdverts = array(
-      array('id' => 2, 'title' => 'Rechercher développeur symfony'),
+      array('id' => 2, 'title' => 'Recherche développeur symfony'),
       array('id' => 3, 'title' => 'Mission de webmaster'),
       array('id' => 4, 'title' => 'Offre de stage de webdesigner')
     );
@@ -37,8 +37,31 @@ class AdvertController extends AbstractController
     if ($page < 1) {
       throw $this->createNotFoundException('Page "' . $page . '" inexistante.');
     }
+ $listAdverts = array(
+      array(
+        'title'   => 'Recherche développpeur Symfony',
+        'id'      => 1,
+        'author'  => 'Alexandre',
+        'content' => 'Nous recherchons un développeur Symfony débutant sur Lyon. Blabla…',
+        'date'    => new \Datetime()),
+      array(
+        'title'   => 'Mission de webmaster',
+        'id'      => 2,
+        'author'  => 'Hugo',
+        'content' => 'Nous recherchons un webmaster capable de maintenir notre site internet. Blabla…',
+        'date'    => new \Datetime()),
+      array(
+        'title'   => 'Offre de stage webdesigner',
+        'id'      => 3,
+        'author'  => 'Mathieu',
+        'content' => 'Nous proposons un poste pour webdesigner. Blabla…',
+        'date'    => new \Datetime())
+    );
 
-    return $this->render('Advert/index.html.twig');
+    // Et modifiez le 2nd argument pour injecter notre liste
+    return $this->render('Advert/index.html.twig', array(
+      'listAdverts' => $listAdverts
+    ));
   }
 
   /**
