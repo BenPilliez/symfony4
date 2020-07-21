@@ -108,8 +108,8 @@ class AdvertController extends AbstractController
 
     $advert->setImage($image);
 
-    $application1->setAdvert($advert);
-    $application2->setAdvert($advert);
+    $advert->addApplication($application1);
+    $advert->addApplication($application2);
 
     $em = $this->getDoctrine()->getManager();
 
@@ -130,8 +130,6 @@ class AdvertController extends AbstractController
     }
 
     $em->persist($advert);
-    $em->persist($application1);
-    $em->persist($application2);
     $em->flush();
 
 
@@ -181,14 +179,14 @@ class AdvertController extends AbstractController
   }
 
   /**
-   * @Route("/delete/{id}", name="advert_delete", requirements={"id"="\d+"}, methods={"DELETE"})
+   * @Route("/delete/{id}", name="advert_delete", requirements={"id"="\d+"}, methods={"DELETE","GET"})
    */
   public function delete(int $id)
   {
 
 
     $em = $this->getDoctrine()->getManager();
-    $advert = $em->getRepository(Advert::class)->find($id);
+    $advert = $em->getRepository(Adverts::class)->find($id);
 
     if (null === $advert) {
       throw new NotFoundHttpException('Aucune annonce avec cette identifiant');
