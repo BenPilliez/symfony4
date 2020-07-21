@@ -19,6 +19,17 @@ class ApplicationRepository extends ServiceEntityRepository
         parent::__construct($registry, Application::class);
     }
 
+    public function getApplicationsWithAdvert($limit)
+    {
+        $qb = $this->createQueryBuilder('app')
+        ->innerJoin('app.advert','adv')
+        ->addSelect('adv')
+        ->setMaxResults($limit);
+
+        return $qb->getQuery()
+        ->getResult();
+    }
+
     // /**
     //  * @return Application[] Returns an array of Application objects
     //  */
