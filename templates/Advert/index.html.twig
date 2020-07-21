@@ -8,18 +8,21 @@
 {% endblock %}
 
 {% block body %}
-<div class="col-12 text-center">
-<h5>Annonces</h5>
-</div>
+	<div class="col-12 text-center">
+		<h5>Annonces</h5>
+	</div>
 	{% for advert in listAdverts  %}
 		<div class="col-lg-4 col-sm-12 mt-3">
 			<div class="card" style="width: 18rem;">
+				{% if advert.image %}
+					<img class="card-img-top" src="{{ advert.image.url}}" alt="{{ advert.image.alt }}">
+				{% endif %}
 				<div class="card-body">
 					<h5 class="card-title">{{advert.title}}</h5>
 					<p class="card-text">
 						Par:
 						{{advert.author}},
-																      le:
+																						      le:
 						{{advert.date|date('d/m/Y')}}
 					</p>
 					<a href="{{ path('advert_view', {'id': advert.id}) }}" class="btn btn-primary">

@@ -4,14 +4,29 @@ namespace App\Entity;
 
 use App\Repository\AdvertsRepository;
 use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=AdvertsRepository::class)
  */
-/**@TORM\Table(name="adverts") */
+/**@ORM\Table(name="adverts") */
 class Adverts
 {
+
+    /**
+     * @ORM\OneToOne(targetEntity="App\Entity\Image", cascade={"persist"})
+     */
+
+    private $image;
+
+    /**
+     * @ORM\ManyToMany(targetEntity="App\Entity\Category", cascade={"persist"})
+     */
+
+     private $categories;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -48,6 +63,7 @@ class Adverts
     public function __construct()
     {
         $this->date = new \DateTime();
+        $this->categories = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -111,6 +127,44 @@ class Adverts
     public function setPublished($published): self
     {
         $this->published = $published;
+
+        return $this;
+    }
+
+    public function getImage(): ?Image
+    {
+        return $this->image;
+    }
+
+    public function setImage(?Image $image = null): self
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Category[]
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(Category $category): self
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories[] = $category;
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(Category $category): self
+    {
+        if ($this->categories->contains($category)) {
+            $this->categories->removeElement($category);
+        }
 
         return $this;
     }

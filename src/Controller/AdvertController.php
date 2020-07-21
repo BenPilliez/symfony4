@@ -8,6 +8,12 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Adverts;
+use App\Entity\Image;
+use App\Entity\Application;
+use App\Entity\Category;
+use App\Entity\AdvertSkill;
+use App\Entity\Skill;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @Route("/advert")
@@ -38,26 +44,10 @@ class AdvertController extends AbstractController
     if ($page < 1) {
       throw $this->createNotFoundException('Page "' . $page . '" inexistante.');
     }
- $listAdverts = array(
-      array(
-        'title'   => 'Recherche développpeur Symfony',
-        'id'      => 1,
-        'author'  => 'Alexandre',
-        'content' => 'Nous recherchons un développeur Symfony débutant sur Lyon. Blabla…',
-        'date'    => new \Datetime()),
-      array(
-        'title'   => 'Mission de webmaster',
-        'id'      => 2,
-        'author'  => 'Hugo',
-        'content' => 'Nous recherchons un webmaster capable de maintenir notre site internet. Blabla…',
-        'date'    => new \Datetime()),
-      array(
-        'title'   => 'Offre de stage webdesigner',
-        'id'      => 3,
-        'author'  => 'Mathieu',
-        'content' => 'Nous proposons un poste pour webdesigner. Blabla…',
-        'date'    => new \Datetime())
-    );
+
+    $em = $this->getDoctrine()->getManager();
+
+    $listAdverts = $em->getRepository(Adverts::class)->findAll();
 
     // Et modifiez le 2nd argument pour injecter notre liste
     return $this->render('Advert/index.html.twig', array(
@@ -70,19 +60,26 @@ class AdvertController extends AbstractController
    */
   public function view(int $id, Request $request)
   {
-    $reposository = $this->getDoctrine()->getManager()->getRepository(Adverts::class);
+    $em = $this->getDoctrine()->getManager();
+
+    $reposository = $em->getRepository(Adverts::class);
 
     $advert = $reposository->find($id);
-     /* $antispam = $this->container->get('monservice.antispam');
 
-     // Je pars du principe que $text contient le texte d'un message quelconque
-     $text = '...';
-     if ($antispam->isSpam($text)) {
-       throw new \Exception('Votre message a été détecté comme spam !');
-     } */
+    if (null === $advert) {
+      throw new NotFoundHttpException('Aucune annonce avec cette identifiant');
+    }
+
+    $listApplications = $em->getRepository(Application::class)
+      ->findBy(array('advert' => $advert));
+
+      $listAdvertsSkills = $em->getRepository(AdvertSkill::class)
+      ->findBy(array('advert'=> $advert));
 
     return $this->render('Advert/view.html.twig', array(
-      'advert' => $advert
+      'advert' => $advert,
+      'listApplications' => $listApplications,
+      'listSkills' => $listAdvertsSkills
     ));
   }
 
@@ -97,9 +94,45 @@ class AdvertController extends AbstractController
     $advert->setContent("Bonjour, nous recherchons un développeur web capable de faire tout est n'importe quoi, mais surtout pas n'importe quoi !");
     $advert->setAuthor('Benjamin');
 
+    $image = new Image();
+    $image->setUrl('http://sdz-upload.s3.amazonaws.com/prod/upload/job-de-reve.jpg');
+    $image->setAlt('Job de rêve');
+
+    $application1 = new Application();
+    $application1->setAuthor('Clément');
+    $application1->setContent('Bonjour, je suis très interessé par cette offre, prenez moi !');
+
+    $application2 = new Application();
+    $application2->setAuthor('Madeleine');
+    $application2->setContent("J'ai besoin de taff prenez moi !");
+
+    $advert->setImage($image);
+
+    $application1->setAdvert($advert);
+    $application2->setAdvert($advert);
+
     $em = $this->getDoctrine()->getManager();
+
+    $listSkills = $em->getRepository(Skill::class)->findAll();
+
+    foreach ($listSkills as $skill) {
+      //On instancie l'objet
+      $advertSkill = new AdvertSkill();
+      // On lui ajoute notre annonce
+      $advertSkill->setAdvert($advert);
+      // On oublie pas les différents skill
+      $advertSkill->setSkill($skill);
+      // Et on lui ajoute un level
+      $advertSkill->setLevel('Débutant');
+
+      $em->persist($advertSkill);
+
+    }
+
     $em->persist($advert);
-    $em->flush(); 
+    $em->persist($application1);
+    $em->persist($application2);
+    $em->flush();
 
 
     if ($request->isMethod("POST")) {
@@ -121,23 +154,30 @@ class AdvertController extends AbstractController
    */
   public function edit(int $id, Request $request)
   {
+
+    $em = $this->getDoctrine()->getManager();
+    $advert = $em->getRepository(Adverts::class)->find($id);
+
+    if (null === $id) {
+      throw new NotFoundHttpException('Aucune annonce avec cet indentifiant');
+    }
+
+    $listCategories = $em->getRepository(Category::class)->findAll();
+
+    foreach ($listCategories as $category) {
+      $advert->addCategory($category);
+    }
+
+    $em->flush();
+
     if ($request->isMethod("POST")) {
       $this->addFlash('notice', 'Annonce bien modifiée');
       return $this->redirectToRoute('advert_view', ["id" => 5]);
     }
-    
-    $advert = array(
-      'title'   => 'Recherche développpeur Symfony',
-      'id'      => $id,
-      'author'  => 'Alexandre',
-      'content' => 'Nous recherchons un développeur Symfony débutant sur Lyon. Blabla…',
-      'date'    => new \Datetime()
-    );
 
     return $this->render('Advert/edit.html.twig', array(
       'advert' => $advert
     ));
-
   }
 
   /**
@@ -146,6 +186,19 @@ class AdvertController extends AbstractController
   public function delete(int $id)
   {
 
+
+    $em = $this->getDoctrine()->getManager();
+    $advert = $em->getRepository(Advert::class)->find($id);
+
+    if (null === $advert) {
+      throw new NotFoundHttpException('Aucune annonce avec cette identifiant');
+    }
+
+    foreach ($advert->getCategories() as $category) {
+      $advert->removeCategory($category);
+    }
+
+    $em->flush();
     return $this->render('Advert/delete.html.twig');
   }
 }
