@@ -93,6 +93,8 @@ class AdvertController extends AbstractController
     $advert->setTitle('Recherche développeur web');
     $advert->setContent("Bonjour, nous recherchons un développeur web capable de faire tout est n'importe quoi, mais surtout pas n'importe quoi !");
     $advert->setAuthor('Benjamin');
+    $advert->setEmail('benjamin.pilliez@sfr.fr');
+
 
     $image = new Image();
     $image->setUrl('http://sdz-upload.s3.amazonaws.com/prod/upload/job-de-reve.jpg');

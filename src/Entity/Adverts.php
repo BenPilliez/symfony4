@@ -9,16 +9,30 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
+ * @ORM\Table(name="adverts")
  * @ORM\Entity(repositoryClass=AdvertsRepository::class)
+ * @ORM\HasLifecycleCallbacks()
  */
-/**@ORM\Table(name="adverts") */
+
 class Adverts
 {
+
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+
+    private $email;
+
+    /**
+     * @ORM\Column(name="nbApplication", type="integer")
+     */
+    private $nbApplication = 0;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\Application", mappedBy="advert",  cascade={"persist"})
      */
-    private $applications;  
+    private $applications;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Image", cascade={"persist"})
@@ -30,7 +44,7 @@ class Adverts
      * @ORM\ManyToMany(targetEntity="App\Entity\Category", cascade={"persist"})
      */
 
-     private $categories;
+    private $categories;
 
     /**
      * @ORM\Id()
@@ -64,6 +78,12 @@ class Adverts
      */
 
     private $published = true;
+
+    /**
+     * @ORM\Column(name="updatedAt", type="datetime", nullable=true)
+     */
+
+    private $updatedAt;
 
     public function __construct()
     {
@@ -202,6 +222,60 @@ class Adverts
                 $application->setAdvert(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @ORM\PreUpdate
+     */
+    public function updateDate()
+    {
+        $this->setUpdatedAt(new \Datetime);
+    }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getNbApplication(): ?int
+    {
+        return $this->nbApplication;
+    }
+
+    public function setNbApplication(int $nbApplication): self
+    {
+        $this->nbApplication = $nbApplication;
+
+        return $this;
+    }
+
+    public function increaseApplication()
+    {
+        $this->nbApplication++;
+    }
+
+    public function decreaseApplication()
+    {
+        $this->nbApplication--;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
 
         return $this;
     }
