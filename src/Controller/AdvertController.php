@@ -13,16 +13,8 @@ use App\Entity\Application;
 use App\Entity\Category;
 use App\Entity\AdvertSkill;
 use App\Entity\Skill;
-use Doctrine\DBAL\Types\TextType as TypesTextType;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\FormBuilder;
+use App\Form\AdvertType;
 
 /**
  * @Route("/advert")
@@ -111,18 +103,7 @@ class AdvertController extends AbstractController
 
     $advert = new Adverts();
 
-    $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $advert);
-
-    $formBuilder
-      ->add('date', DateType::class)
-      ->add('title', TextType::class)
-      ->add('content', TextareaType::class)
-      ->add('email', EmailType::class)
-      ->add('author', TextType::class)
-      ->add('published', CheckboxType::class, array('required' => false))
-      ->add('save', SubmitType::class);
-
-    $form = $formBuilder->getForm();
+    $form = $this->get('form.factory')->create(AdvertType::class, $advert);
 
     /* $image = new Image();
     $image->setUrl('http://sdz-upload.s3.amazonaws.com/prod/upload/job-de-reve.jpg');
@@ -196,18 +177,7 @@ class AdvertController extends AbstractController
       throw new NotFoundHttpException('Aucune annonce avec cet indentifiant');
     }
 
-    $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $advert);
-
-    $formBuilder
-      ->add('date', DateType::class)
-      ->add('title', TextType::class)
-      ->add('content', TextareaType::class)
-      ->add('email', EmailType::class)
-      ->add('author', TextType::class)
-      ->add('published', CheckboxType::class, array('required' => false))
-      ->add('save', SubmitType::class);
-
-    $form = $formBuilder->getForm();
+    $form = $this->get('form.factory')->create(AdvertType::class, $advert);
 
     /* $listCategories = $em->getRepository(Category::class)->findAll();
 
