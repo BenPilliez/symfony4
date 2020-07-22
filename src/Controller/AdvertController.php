@@ -37,9 +37,9 @@ class AdvertController extends AbstractController
 
   // requirements permet de typé les params grâce à des regex, defaults= permet de passer une valeur par défaut au param
   /**
-   * @Route("/{page}", name="advert_index", requirements={"page"="\d+"},defaults={"page" = 1}, methods={"GET"})
+   * @Route("/{page}", name="advert_index", requirements={"page"="\d+", "nbPerPage"= "\d+"},defaults={"page" = 1, "nbPerPage" = 1 }, methods={"GET"})
    */
-  public function index(int $page)
+  public function index(int $page, int $nbPerPage)
   {
     if ($page < 1) {
       throw $this->createNotFoundException('Page "' . $page . '" inexistante.');
@@ -47,11 +47,22 @@ class AdvertController extends AbstractController
 
     $em = $this->getDoctrine()->getManager();
 
-    $listAdverts = $em->getRepository(Adverts::class)->findAll();
+    $listAdverts = $em->getRepository(Adverts::class)->getAdverts($page,$nbPerPage);
+
+     // On calcule le nombre total de pages grâce au count($listAdverts) qui retourne le nombre total d'annonces
+     $nbPages = ceil(count($listAdverts) / $nbPerPage);
+
+     // Si la page n'existe pas, on retourne une 404
+     if ($page > $nbPages) {
+       throw $this->createNotFoundException("La page ".$page." n'existe pas.");
+     }
+ 
 
     // Et modifiez le 2nd argument pour injecter notre liste
     return $this->render('Advert/index.html.twig', array(
-      'listAdverts' => $listAdverts
+      'listAdverts' => $listAdverts,
+      'page' => $page,
+      'nbPages' => $nbPages
     ));
   }
 
