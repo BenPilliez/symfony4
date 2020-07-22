@@ -7,6 +7,11 @@
 {% endblock %}
 
 {% block body %}
+	{% for message in app.flashes('success') %}
+		<div class="alert alert-success col-12">
+			{{ message }}
+		</div>
+	{% endfor %}
 	<div class="col">
 		<h2>{{advert.title}}</h2>
 		<i>Par
@@ -26,7 +31,7 @@
 				<br>
 				Cette annonce requiert les compétences suivantes :
 				{% for skill in listSkills  %}
-				
+
 					<br>{{skill.skill.name}}
 					:
 					{{skill.level}}

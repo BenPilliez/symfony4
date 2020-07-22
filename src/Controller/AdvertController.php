@@ -13,7 +13,16 @@ use App\Entity\Application;
 use App\Entity\Category;
 use App\Entity\AdvertSkill;
 use App\Entity\Skill;
+use Doctrine\DBAL\Types\TextType as TypesTextType;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\FormBuilder;
 
 /**
  * @Route("/advert")
@@ -101,13 +110,21 @@ class AdvertController extends AbstractController
   {
 
     $advert = new Adverts();
-    $advert->setTitle('Recherche développeur web');
-    $advert->setContent("Bonjour, nous recherchons un développeur web capable de faire tout est n'importe quoi, mais surtout pas n'importe quoi !");
-    $advert->setAuthor('Benjamin');
-    $advert->setEmail('benjamin.pilliez@sfr.fr');
 
+    $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $advert);
 
-    $image = new Image();
+    $formBuilder
+      ->add('date', DateType::class)
+      ->add('title', TextType::class)
+      ->add('content', TextareaType::class)
+      ->add('email', EmailType::class)
+      ->add('author', TextType::class)
+      ->add('published', CheckboxType::class, array('required' => false))
+      ->add('save', SubmitType::class);
+
+    $form = $formBuilder->getForm();
+
+    /* $image = new Image();
     $image->setUrl('http://sdz-upload.s3.amazonaws.com/prod/upload/job-de-reve.jpg');
     $image->setAlt('Job de rêve');
 
@@ -142,25 +159,32 @@ class AdvertController extends AbstractController
     }
 
     $em->persist($advert);
-    $em->flush();
+    $em->flush(); */
 
 
     if ($request->isMethod("POST")) {
-      $this->addFlash('info', 'Annonce bien enregistrée');
 
-      // Le « flashBag » est ce qui contient les messages flash dans la session
-      // Il peut bien sûr contenir plusieurs messages :
-      $this->addFlash('info', 'Oui oui, elle est bien enregistrée !');
+      $form->handleRequest($request);
 
-      // Puis on redirige vers la page de visualisation de cette annonce
-      return $this->redirectToRoute('advert_view', ['id' => 5]);
+      if ($form->isValid()) {
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($advert);
+        $em->flush();
+
+        $this->addFlash('success', 'Annonce créée!');
+
+        // Puis on redirige vers la page de visualisation de cette annonce
+        return $this->redirectToRoute('advert_view', ['id' => $advert->getId()]);
+      }
     }
 
-    return $this->render('Advert/add.html.twig');
+    return $this->render('Advert/add.html.twig', array(
+      'form' => $form->createView()
+    ));
   }
 
   /**
-   * @Route("/edit/{id}", name="advert_edit", requirements={"id"="\d+"}, methods={"PUT","GET"})
+   * @Route("/edit/{id}", name="advert_edit", requirements={"id"="\d+"}, methods={"POST","GET"})
    */
   public function edit(int $id, Request $request)
   {
@@ -172,20 +196,43 @@ class AdvertController extends AbstractController
       throw new NotFoundHttpException('Aucune annonce avec cet indentifiant');
     }
 
-    $listCategories = $em->getRepository(Category::class)->findAll();
+    $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $advert);
+
+    $formBuilder
+      ->add('date', DateType::class)
+      ->add('title', TextType::class)
+      ->add('content', TextareaType::class)
+      ->add('email', EmailType::class)
+      ->add('author', TextType::class)
+      ->add('published', CheckboxType::class, array('required' => false))
+      ->add('save', SubmitType::class);
+
+    $form = $formBuilder->getForm();
+
+    /* $listCategories = $em->getRepository(Category::class)->findAll();
 
     foreach ($listCategories as $category) {
       $advert->addCategory($category);
     }
 
     $em->flush();
+    */
 
     if ($request->isMethod("POST")) {
-      $this->addFlash('notice', 'Annonce bien modifiée');
-      return $this->redirectToRoute('advert_view', ["id" => 5]);
+
+      $form->handleRequest($request);
+
+      if ($form->isValid()) {
+        $em = $this->getDoctrine()->getManager();
+        $em->flush();
+
+        $this->addFlash('notice', 'Annonce bien modifiée');
+        return $this->redirectToRoute('advert_view', ["id" => $advert->getId()]);
+      }
     }
 
     return $this->render('Advert/edit.html.twig', array(
+      'form' => $form->createView(),
       'advert' => $advert
     ));
   }
