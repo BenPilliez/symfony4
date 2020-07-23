@@ -15,6 +15,7 @@ use App\Entity\AdvertSkill;
 use App\Entity\Skill;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use App\Form\AdvertType;
+use App\Form\AdvertEditType;
 
 /**
  * @Route("/advert")
@@ -177,7 +178,7 @@ class AdvertController extends AbstractController
       throw new NotFoundHttpException('Aucune annonce avec cet indentifiant');
     }
 
-    $form = $this->get('form.factory')->create(AdvertType::class, $advert);
+    $form = $this->get('form.factory')->create(AdvertEditType::class, $advert);
 
     /* $listCategories = $em->getRepository(Category::class)->findAll();
 
