@@ -71,17 +71,18 @@ class AdvertController extends AbstractController
   /**
    * @Route("/view/{id}", name="advert_view", requirements={"id"="\d+"}, methods={"GET"})
    */
-  public function view(int $id, Request $request)
+  public function view(Adverts $advert, int $id, Request $request)
   {
-    $em = $this->getDoctrine()->getManager();
+     $em = $this->getDoctrine()->getManager();
 
+     /*
     $reposository = $em->getRepository(Adverts::class);
 
     $advert = $reposository->find($id);
 
     if (null === $advert) {
       throw new NotFoundHttpException('Aucune annonce avec cette identifiant');
-    }
+    } */
 
     $listApplications = $em->getRepository(Application::class)
       ->findBy(array('advert' => $advert));
