@@ -46,7 +46,7 @@
 
 		{% if advert.image %}
 			<div class="mt-3">
-				<img src="{{advert.image.url}}" alt="{{ advert.image.alt}}"/>
+				<img src="{{ asset(advert.image.webPath) }}" alt="{{ advert.image.alt }}" width="550" height="480"/>
 			</div>
 		{% endif %}
 

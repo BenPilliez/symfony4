@@ -41,7 +41,7 @@ class Adverts
     private $applications;
 
     /**
-     * @ORM\OneToOne(targetEntity="App\Entity\Image", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="App\Entity\Image", cascade={"persist", "remove"})
      */
 
     private $image;

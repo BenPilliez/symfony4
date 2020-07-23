@@ -149,6 +149,7 @@ class AdvertController extends AbstractController
       $form->handleRequest($request);
 
       if ($form->isValid()) {
+                
         $em = $this->getDoctrine()->getManager();
         $em->persist($advert);
         $em->flush();
@@ -209,11 +210,10 @@ class AdvertController extends AbstractController
   }
 
   /**
-   * @Route("/delete/{id}", name="advert_delete", requirements={"id"="\d+"}, methods={"DELETE","GET"})
+   * @Route("/delete/{id}", name="advert_delete", requirements={"id"="\d+"}, methods={"POST","GET"})
    */
-  public function delete(int $id)
+  public function delete(Request $request, int $id)
   {
-
 
     $em = $this->getDoctrine()->getManager();
     $advert = $em->getRepository(Adverts::class)->find($id);
@@ -222,12 +222,25 @@ class AdvertController extends AbstractController
       throw new NotFoundHttpException('Aucune annonce avec cette identifiant');
     }
 
-    foreach ($advert->getCategories() as $category) {
-      $advert->removeCategory($category);
-    }
 
-    $em->flush();
-    return $this->render('Advert/delete.html.twig');
+    // On crée un formulaire vide, qui ne contiendra que le champ CSRF
+    // Cela permet de protéger la suppression d'annonce contre cette faille
+    $form = $this->get('form.factory')->create();
+
+    if ($request->isMethod('POST') && $form->handleRequest($request)->isValid()) {
+      $em->remove($advert);
+      $em->flush();
+
+      $this->addFlash('info', "L'annonce a bien été supprimée.");
+
+      return $this->redirectToRoute('advert_index');
+    }
+    
+    return $this->render('Advert/delete.html.twig', array(
+      'advert' => $advert,
+      'form'   => $form->createView(),
+    ));
+
   }
 
   /**
