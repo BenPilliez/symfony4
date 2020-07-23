@@ -8,11 +8,17 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use App\Validator\AntiFlood;
+
 
 /**
  * @ORM\Table(name="adverts")
  * @ORM\Entity(repositoryClass=AdvertsRepository::class)
  * @ORM\HasLifecycleCallbacks()
+ * @UniqueEntity(fields="title", message="Une annonce existe déjà avec ce titre.")
+ * @UniqueEntity(fields="email", message="Adresse email déjà utilisée.")
  */
 
 class Adverts
@@ -25,7 +31,8 @@ class Adverts
     private $slug;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @Assert\Email
      */
 
     private $email;
@@ -42,6 +49,7 @@ class Adverts
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\Image", cascade={"persist", "remove"})
+     * @Assert\Valid
      */
 
     private $image;
@@ -61,21 +69,26 @@ class Adverts
 
     /**
      * @ORM\Column(type="datetime")
+     * @Assert\DateTime
      */
     private $date;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @Assert\Length(min=10)
      */
     private $title;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(min=2)
      */
     private $author;
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\NotBlank
+     * @Annotation()
      */
     private $content;
 

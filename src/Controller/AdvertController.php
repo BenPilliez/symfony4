@@ -55,7 +55,7 @@ class AdvertController extends AbstractController
     $nbPages = ceil(count($listAdverts) / $nbPerPage);
 
     // Si la page n'existe pas, on retourne une 404
-    if ($page > $nbPages) {
+    if ($page > $nbPages && $page !== 1) {
       throw $this->createNotFoundException("La page " . $page . " n'existe pas.");
     }
 
